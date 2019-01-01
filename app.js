@@ -13,7 +13,7 @@ const path = require('path')
 
 const config = require('./config')
 const routes = require('./routes')
-
+const { auth_url,access_token,user_info } = require('./services/alipay')
 const port = process.env.PORT || config.port
 
 // error handler
@@ -42,8 +42,10 @@ router.get('/', (ctx, next) => {
   ctx.body = { state }
 })
 
-router.get('/api/auhRedirect', (ctx, next) => {
-  ctx.body = '支付宝zhifubao' 
+router.post('/api/auhRedirect', (ctx, next) => {
+  ctx.body = {
+    auth_url
+  } 
 })
 
 
