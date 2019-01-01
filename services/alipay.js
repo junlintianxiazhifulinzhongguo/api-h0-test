@@ -1,11 +1,12 @@
-const AlipaySdk = require('alipay-sdk').default;
-
+const AlipaySdk = require('alipay-sdk').default
+const fs = require('fs')
+const { resolve } = require('path')
 const config = require('../config')
 const alipaySdk = new AlipaySdk({
     url: config.alipay.URL,
     appId: config.alipay.APPID,
-    appPrivateKey: fs.readFileSync('../config/key/alipay/rsa_private_key.pem', 'utf-8'),
-    alipayPublicKey: fs.readFileSync('../config/key/alipay/alipay_public_key.pem', 'ascii'),
+    privateKey: fs.readFileSync(resolve(__dirname,'../config/key/alipay/rsa_private_key.pem'), 'utf-8'),
+    alipayPublicKey: fs.readFileSync(resolve(__dirname,'../config/key/alipay/alipay_public_key.pem'), 'ascii'),
     format: config.alipay.FORMAT,
     charset: config.alipay.CHARSET,
     signType: config.alipay.SIGN_TYPE,
@@ -15,12 +16,11 @@ const alipaySdk = new AlipaySdk({
 
 const auth_url= `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=` + config.alipay.APPID +`&scope=auth_user&redirect_uri=` + config.alipay.Redirect_uri
 
-const access_token = (alipaySdk,auth_code)=>{
+const access_token =async (alipaySdk,auth_code)=>{
     try {
         const result = await alipaySdk.exec('alipay.system.oauth.token', {
         grantType: 'authorization_code',
-        code: auth_code,
-        refreshToken: 'token'
+        code: auth_code
         }, {
             validateSign: true,
             log: this.logger,
@@ -31,7 +31,7 @@ const access_token = (alipaySdk,auth_code)=>{
     }
 }
 
-const user_info = (alipaySdk,access_token)=>{
+const user_info =async (alipaySdk,access_token)=>{
     try {
         const result = await alipaySdk.exec('alipay.user.info.share', {
         auth_token: auth_token
@@ -45,7 +45,7 @@ const user_info = (alipaySdk,access_token)=>{
     }
 }
 
-module.export={
+module.exports={
     auth_url,
     access_token,
     user_info
