@@ -46,7 +46,7 @@ router.get('/api/auhRedirect', (ctx, next) => {
   console.log(1111)
   console.log( auth_url )
   ctx.body = {
-    auth_url
+    "auth_url" : auth_url
   } 
 })
 
